@@ -4,7 +4,7 @@ export declare const CHAIN_NAMES: {
     readonly 56: "bsc";
     readonly 11155111: "sepolia";
 };
-export declare const SUPPORTED_NETWORKS: ({
+export declare const SUPPORTED_CHAINS: ({
     blockExplorers: {
         readonly default: {
             readonly name: "Etherscan";

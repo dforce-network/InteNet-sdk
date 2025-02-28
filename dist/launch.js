@@ -5,10 +5,10 @@ const contracts_1 = require("./contracts");
 const viem_1 = require("viem");
 const constants_1 = require("./constants");
 async function launch(params, walletClient, publicClient) {
-    const { creator, name, ticker, cores, description, image, urls, purchaseAmount, network, } = params;
-    const networkName = constants_1.CHAIN_NAMES[network.id];
+    const { creator, name, ticker, cores, description, image, urls, purchaseAmount, chain, } = params;
+    const networkName = constants_1.CHAIN_NAMES[chain.id];
     if (!contracts_1.contracts[networkName]?.bonding) {
-        throw new Error(`Bonding contract not found on network ${network}`);
+        throw new Error(`Bonding contract not found on network ${chain}`);
     }
     try {
         // TODO: check the launch Fee and allowance
@@ -26,7 +26,7 @@ async function launch(params, walletClient, publicClient) {
                 urls,
                 purchaseAmount,
             ],
-            chain: network,
+            chain,
             account: walletClient.account ?? null,
         });
         const receipt = await publicClient.waitForTransactionReceipt({

@@ -24,13 +24,13 @@ export async function launch(
     image,
     urls,
     purchaseAmount,
-    network,
+    chain,
   } = params;
 
-  const networkName = CHAIN_NAMES[network.id as keyof typeof CHAIN_NAMES];
+  const networkName = CHAIN_NAMES[chain.id as keyof typeof CHAIN_NAMES];
 
   if (!contracts[networkName]?.bonding) {
-    throw new Error(`Bonding contract not found on network ${network}`);
+    throw new Error(`Bonding contract not found on network ${chain}`);
   }
 
   try {
@@ -50,7 +50,7 @@ export async function launch(
         urls,
         purchaseAmount,
       ],
-      chain: network,
+      chain,
       account: walletClient.account ?? null,
     });
 

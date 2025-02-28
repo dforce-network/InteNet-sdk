@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from "vitest";
-import { launch } from "../src/launch";
+import { launch } from "../src/index";
 import { sepolia } from "viem/chains";
 import { createPublicClient, createWalletClient } from "viem";
 import { http } from "viem";
@@ -46,7 +46,7 @@ describe("launch", () => {
         string,
       ],
       purchaseAmount: 0,
-      network: sepolia,
+      chain: sepolia,
     };
   });
 
@@ -55,29 +55,16 @@ describe("launch", () => {
 
     console.log(result);
 
-    // expect(result).toEqual({
-    //   transactionHash: "0xmocktxhash",
-    //   status: "success",
-    //   blockNumber: 1234n,
-    // });
-
-    // expect(contracts.base.bonding.write.launchFor).toHaveBeenCalledWith([
-    //   mockParams.creator,
-    //   mockParams.name,
-    //   mockParams.ticker,
-    //   mockParams.cores,
-    //   mockParams.description,
-    //   mockParams.image,
-    //   mockParams.urls,
-    //   mockParams.purchaseAmount,
-    // ]);
+    expect(result).toBeDefined();
+    expect(result.tokenAddress).toBeDefined();
+    expect(result.transactionHash).toBeDefined();
   });
 
   it("should throw error if bonding contract is not found", async () => {
-    const invalidParams = { ...launchParams, network: { id: 999 } as Chain };
+    const invalidParams = { ...launchParams, chain: { id: 999 } as Chain };
 
-    await expect(launch(invalidParams)).rejects.toThrow(
-      "Bonding contract not found on network"
-    );
+    await expect(
+      launch(invalidParams, walletClient, publicClient)
+    ).rejects.toThrow("Bonding contract not found on network");
   });
 });

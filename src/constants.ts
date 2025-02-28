@@ -7,4 +7,4 @@ export const CHAIN_NAMES = {
   [sepolia.id]: "sepolia",
 } as const;
 
-export const SUPPORTED_NETWORKS = [mainnet, base, bsc, sepolia];
+export const SUPPORTED_CHAINS = [mainnet, base, bsc, sepolia];

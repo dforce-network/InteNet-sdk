@@ -9,5 +9,5 @@ export interface LaunchParams {
   image: string;
   urls: [string, string, string, string];
   purchaseAmount: bigint;
-  network: Chain;
+  chain: Chain;
 }

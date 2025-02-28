@@ -8,23 +8,23 @@ const constants_1 = require("./constants");
 function loadContracts() {
     const deploymentsPath = (0, path_1.join)(__dirname, "../deployments");
     const contracts = {};
-    constants_1.SUPPORTED_NETWORKS.forEach((network) => {
-        const networkName = constants_1.CHAIN_NAMES[network.id];
-        contracts[networkName] = {};
+    constants_1.SUPPORTED_CHAINS.forEach((chain) => {
+        const chainName = constants_1.CHAIN_NAMES[chain.id];
+        contracts[chainName] = {};
         try {
-            const files = (0, fs_1.readdirSync)((0, path_1.join)(deploymentsPath, networkName));
+            const files = (0, fs_1.readdirSync)((0, path_1.join)(deploymentsPath, chainName));
             for (const file of files) {
                 if (!file.endsWith(".json") || file.includes("-") || file.includes("_"))
                     continue;
                 const contractName = file.slice(0, -5); // Remove .json suffix
-                const filePath = (0, path_1.join)(deploymentsPath, networkName, file);
+                const filePath = (0, path_1.join)(deploymentsPath, chainName, file);
                 const content = JSON.parse((0, fs_1.readFileSync)(filePath, "utf-8"));
-                contracts[networkName][contractName] = (0, viem_1.getContract)({
+                contracts[chainName][contractName] = (0, viem_1.getContract)({
                     address: content.address,
                     abi: content.abi,
                     client: {
                         public: (0, viem_1.createPublicClient)({
-                            chain: network,
+                            chain,
                             transport: (0, viem_1.http)(),
                         }),
                     },
@@ -32,7 +32,7 @@ function loadContracts() {
             }
         }
         catch (error) {
-            console.warn(`Failed to load ABI for network ${network}:`, error);
+            console.warn(`Failed to load ABI for chain ${chain}:`, error);
         }
     });
     return contracts;
