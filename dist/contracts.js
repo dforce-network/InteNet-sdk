@@ -32,7 +32,7 @@ function loadContracts() {
             }
         }
         catch (error) {
-            console.warn(`Failed to load ABI for chain ${chain}:`, error);
+            console.warn(`Failed to load ABI for chain ${chainName}:`, error);
         }
     });
     return contracts;

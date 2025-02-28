@@ -38,7 +38,7 @@ function loadContracts(): Record<
         });
       }
     } catch (error) {
-      console.warn(`Failed to load ABI for chain ${chain}:`, error);
+      console.warn(`Failed to load ABI for chain ${chainName}:`, error);
     }
   });
 
