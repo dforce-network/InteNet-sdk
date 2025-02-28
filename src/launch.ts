@@ -5,6 +5,7 @@ import {
   WalletClient,
   PublicClient,
   parseEventLogs,
+  decodeEventLog,
 } from "viem";
 import { LaunchParams } from "./types";
 import { CHAIN_NAMES } from "./constants";
@@ -50,14 +51,14 @@ export async function launch(
         purchaseAmount,
       ],
       chain: network,
-      account: walletClient.account,
+      account: walletClient.account ?? null,
     });
 
     const receipt = await publicClient.waitForTransactionReceipt({
       hash: tx,
     });
 
-    const logs = parseEventLogs({
+    const logs: any = parseEventLogs({
       abi: contracts[networkName].bonding.abi,
       eventName: "Launched",
       logs: receipt.logs,
@@ -71,7 +72,10 @@ export async function launch(
       blockNumber: receipt.blockNumber,
       tokenAddress,
     };
-  } catch (error) {
-    throw new Error(`Failed to launch token: ${error.message}`);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      throw new Error(`Failed to launch token: ${error.message}`);
+    }
+    throw new Error("Failed to launch token: Unknown error");
   }
 }

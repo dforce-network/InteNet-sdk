@@ -1,16 +1,12 @@
-export interface NetworkConfig {
-    chainId: number;
-    rpcUrl: string;
-    inteNetAddress: string;
-}
-export interface MemeTokenParams {
+import { Chain } from "viem";
+export interface LaunchParams {
+    creator: string;
     name: string;
-    symbol: string;
-    totalSupply: bigint;
-    owner: string;
-}
-export interface LaunchOptions {
-    network: "base" | "bsc";
-    initialLiquidity: bigint;
-    tokenParams: MemeTokenParams;
+    ticker: string;
+    cores: number[];
+    description: string;
+    image: string;
+    urls: [string, string, string, string];
+    purchaseAmount: bigint;
+    network: Chain;
 }
