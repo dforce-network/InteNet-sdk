@@ -14,7 +14,7 @@ export interface BuyParams {
 }
 export interface BuyResult {
     transactionHash: `0x${string}`;
-    status: "success" | "failed";
+    status: "success" | "reverted";
     blockNumber: bigint;
     tokenAmount: bigint;
     assetAmount: bigint;
@@ -28,4 +28,15 @@ export interface ApproveParams {
     token: `0x${string}`;
     spender: `0x${string}`;
     amount: bigint;
+}
+export interface SellParams {
+    tokenAddress: `0x${string}`;
+    amount: bigint;
+}
+export interface SellResult {
+    transactionHash: `0x${string}`;
+    status: "success" | "reverted";
+    blockNumber: bigint;
+    tokenAmount: bigint;
+    assetAmount: bigint;
 }
