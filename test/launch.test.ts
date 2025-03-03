@@ -1,10 +1,7 @@
 import { describe, it, expect, beforeAll } from "vitest";
 import { launch } from "../src/index";
 import { sepolia } from "viem/chains";
-import { createPublicClient, createWalletClient } from "viem";
-import { http } from "viem";
-import "dotenv/config";
-import { privateKeyToAccount } from "viem/accounts";
+import { setup } from "./utils";
 
 describe("launch", () => {
   let chain = sepolia;
@@ -14,23 +11,7 @@ describe("launch", () => {
   let publicClient;
 
   beforeAll(async () => {
-    const privateKey = process.env.PRIVATE_KEY as `0x${string}`;
-    if (!privateKey) {
-      throw new Error("PRIVATE_KEY not found in environment variables");
-    }
-
-    account = privateKeyToAccount(privateKey);
-
-    walletClient = createWalletClient({
-      chain: chain,
-      transport: http(),
-      account,
-    });
-
-    publicClient = createPublicClient({
-      chain: chain,
-      transport: http(),
-    });
+    ({ account, walletClient, publicClient } = setup(chain));
 
     launchParams = {
       creator: account.address,
@@ -46,14 +27,13 @@ describe("launch", () => {
         string,
       ],
       purchaseAmount: 0,
-      chain: sepolia,
     };
   });
 
   it("should successfully launch a token", async () => {
     const result = await launch(launchParams, walletClient, publicClient);
 
-    console.log(result);
+    // console.log(result);
 
     expect(result).toBeDefined();
     expect(result.tokenAddress).toBeDefined();
@@ -61,10 +41,13 @@ describe("launch", () => {
   });
 
   it("should throw error if bonding contract is not found", async () => {
-    const invalidParams = { ...launchParams, chain: { id: 999 } as Chain };
+    const invalidPublicClient = {
+      ...publicClient,
+      chain: { id: 999 } as any,
+    };
 
     await expect(
-      launch(invalidParams, walletClient, publicClient)
+      launch(launchParams, walletClient, invalidPublicClient)
     ).rejects.toThrow("Bonding contract not found on network");
   });
 });

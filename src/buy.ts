@@ -1,3 +1,4 @@
+import { CHAIN_NAMES } from "./constants";
 import { contracts } from "./contracts";
 import {
   parseEther,
@@ -5,26 +6,16 @@ import {
   WalletClient,
   PublicClient,
   parseEventLogs,
-  decodeEventLog,
 } from "viem";
-import { LaunchParams } from "./types";
-import { CHAIN_NAMES } from "./constants";
+import { BuyParams } from "./types";
+import { ensureAllowance } from "./allowance";
 
-export async function launch(
-  params: LaunchParams,
+export async function buy(
+  params: BuyParams,
   walletClient: WalletClient,
   publicClient: PublicClient
 ) {
-  const {
-    creator,
-    name,
-    ticker,
-    cores,
-    description,
-    image,
-    urls,
-    purchaseAmount,
-  } = params;
+  const { tokenAddress, amount } = params;
 
   const chain = publicClient.chain;
 
@@ -39,22 +30,21 @@ export async function launch(
   }
 
   try {
-    // TODO: check the launch Fee and allowance
+    await ensureAllowance(
+      {
+        token: contracts[networkName].INT.address,
+        spender: contracts[networkName].bonding.address,
+        amount,
+      },
+      publicClient,
+      walletClient
+    );
 
     const tx = await walletClient.writeContract({
       address: contracts[networkName].bonding.address,
       abi: contracts[networkName].bonding.abi,
-      functionName: "launchFor",
-      args: [
-        creator,
-        name,
-        ticker,
-        cores,
-        description,
-        image,
-        urls,
-        purchaseAmount,
-      ],
+      functionName: "buy",
+      args: [amount, tokenAddress],
       chain,
       account: walletClient.account ?? null,
     });
@@ -63,24 +53,29 @@ export async function launch(
       hash: tx,
     });
 
+    // console.log(receipt);
+
     const logs: any = parseEventLogs({
-      abi: contracts[networkName].bonding.abi,
-      eventName: "Launched",
+      abi: contracts[networkName].INTRouterLibrary.abi,
+      eventName: "Buy",
       logs: receipt.logs,
     });
 
-    const tokenAddress = logs[0].args.token;
+    // console.log(logs);
+
+    const { tokenAmount, assetAmount } = logs[0].args;
 
     return {
       transactionHash: receipt.transactionHash,
       status: receipt.status,
       blockNumber: receipt.blockNumber,
-      tokenAddress,
+      tokenAmount,
+      assetAmount,
     };
   } catch (error: unknown) {
     if (error instanceof Error) {
-      throw new Error(`Failed to launch token: ${error.message}`);
+      throw new Error(`Failed to buy token: ${error.message}`);
     }
-    throw new Error("Failed to launch token: Unknown error");
+    throw new Error("Failed to buy token: Unknown error");
   }
 }

@@ -5,7 +5,7 @@ describe("Contracts", () => {
   const networkName = "sepolia";
 
   describe("INT", () => {
-    it("should have name function", async () => {
+    it("should have total supply", async () => {
       const totalSupply = await contracts[networkName].INT.read.totalSupply();
       console.log(totalSupply);
     });
