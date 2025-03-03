@@ -8,4 +8,4 @@ exports.CHAIN_NAMES = {
     [chains_1.bsc.id]: "bsc",
     [chains_1.sepolia.id]: "sepolia",
 };
-exports.SUPPORTED_CHAINS = [chains_1.mainnet, chains_1.base, chains_1.bsc, chains_1.sepolia];
+exports.SUPPORTED_CHAINS = [chains_1.base, chains_1.bsc, chains_1.sepolia];

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.contracts = void 0;
+exports.contracts = exports.isSupportedChain = void 0;
 const fs_1 = require("fs");
 const path_1 = require("path");
 const viem_1 = require("viem");
@@ -37,4 +37,6 @@ function loadContracts() {
     });
     return contracts;
 }
+const isSupportedChain = (chainId) => constants_1.SUPPORTED_CHAINS.some((chain) => chain.id === chainId);
+exports.isSupportedChain = isSupportedChain;
 exports.contracts = loadContracts();

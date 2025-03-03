@@ -45,4 +45,7 @@ function loadContracts(): Record<
   return contracts;
 }
 
+export const isSupportedChain = (chainId: number) =>
+  SUPPORTED_CHAINS.some((chain) => chain.id === chainId);
+
 export const contracts = loadContracts();
